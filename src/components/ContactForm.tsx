@@ -134,7 +134,7 @@ export default function ContactForm({ onSubmit, onBackToQuiz, score, answers }: 
           disabled={submitting}
           className="h-[60px] w-full rounded-[10px] bg-[#0427ff] text-[18px] font-semibold text-white shadow-[0px_10px_7.5px_rgba(0,0,0,0.1),0px_4px_3px_rgba(0,0,0,0.1)] transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {submitting ? 'Submitting…' : 'Book My Demo'}
+          {submitting ? 'Submitting…' : 'See Maturity Score'}
         </button>
 
         {error && <p className="mt-3 text-center text-[14px] font-medium text-[#e7000b]">{error}</p>}
