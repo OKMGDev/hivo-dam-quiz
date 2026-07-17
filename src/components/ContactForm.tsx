@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from 'react'
+import { questions } from '../questions'
+import { isHubSpotConfigured, submitQuizLead } from '../lib/hubspot'
 
 const hexOuter = '/assets/form-vector.svg'
 const hexInner = '/assets/form-vector1.svg'
@@ -11,6 +13,13 @@ export interface ContactDetails {
 interface ContactFormProps {
   onSubmit: (details: ContactDetails) => void
   onBackToQuiz: () => void
+  score: number
+  answers: Record<number, number>
+}
+
+function buildBreakdown(score: number, answers: Record<number, number>): string {
+  const lines = questions.map((q, i) => `${q.category}: ${answers[i] ?? 0}/10`)
+  return `Total maturity score: ${score}/100\n\n${lines.join('\n')}`
 }
 
 function HexBadge() {
@@ -26,14 +35,42 @@ function HexBadge() {
   )
 }
 
-export default function ContactForm({ onSubmit, onBackToQuiz }: ContactFormProps) {
+export default function ContactForm({ onSubmit, onBackToQuiz, score, answers }: ContactFormProps) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [company, setCompany] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    if (!name.trim() || !email.trim()) return
-    onSubmit({ name: name.trim(), email: email.trim() })
+    const trimmedName = name.trim()
+    const trimmedEmail = email.trim()
+    const trimmedCompany = company.trim()
+    if (!trimmedName || !trimmedEmail || !trimmedCompany || submitting) return
+
+    // Send the lead to HubSpot before showing results. If HubSpot isn't
+    // configured (e.g. local dev without env vars), skip straight to results.
+    if (isHubSpotConfigured()) {
+      setSubmitting(true)
+      setError(null)
+      try {
+        await submitQuizLead({
+          name: trimmedName,
+          email: trimmedEmail,
+          company: trimmedCompany,
+          score,
+          breakdown: buildBreakdown(score, answers),
+        })
+      } catch (err) {
+        console.error(err)
+        setSubmitting(false)
+        setError('Something went wrong submitting your details. Please try again.')
+        return
+      }
+    }
+
+    onSubmit({ name: trimmedName, email: trimmedEmail })
   }
 
   return (
@@ -62,7 +99,7 @@ export default function ContactForm({ onSubmit, onBackToQuiz }: ContactFormProps
           />
         </div>
 
-        <div className="py-5">
+        <div className="pt-5">
           <label htmlFor="email" className="mb-2 block text-[14px] font-medium text-[#364153]">
             Work Email *
           </label>
@@ -77,12 +114,30 @@ export default function ContactForm({ onSubmit, onBackToQuiz }: ContactFormProps
           />
         </div>
 
+        <div className="py-5">
+          <label htmlFor="company" className="mb-2 block text-[14px] font-medium text-[#364153]">
+            Company *
+          </label>
+          <input
+            id="company"
+            type="text"
+            value={company}
+            onChange={(e) => setCompany(e.target.value)}
+            placeholder="Acme Inc."
+            required
+            className="h-[50px] w-full rounded-[10px] border border-[#d1d5dc] px-[17px] text-[16px] text-[#0a0a0a] outline-none transition-colors placeholder:text-[rgba(10,10,10,0.5)] focus:border-[#0427ff] focus:ring-2 focus:ring-brand/20"
+          />
+        </div>
+
         <button
           type="submit"
-          className="h-[60px] w-full rounded-[10px] bg-[#0427ff] text-[18px] font-semibold text-white shadow-[0px_10px_7.5px_rgba(0,0,0,0.1),0px_4px_3px_rgba(0,0,0,0.1)] transition-colors hover:bg-brand-dark"
+          disabled={submitting}
+          className="h-[60px] w-full rounded-[10px] bg-[#0427ff] text-[18px] font-semibold text-white shadow-[0px_10px_7.5px_rgba(0,0,0,0.1),0px_4px_3px_rgba(0,0,0,0.1)] transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-70"
         >
-          Book My Demo
+          {submitting ? 'Submitting…' : 'Book My Demo'}
         </button>
+
+        {error && <p className="mt-3 text-center text-[14px] font-medium text-[#e7000b]">{error}</p>}
 
         <button
           type="button"

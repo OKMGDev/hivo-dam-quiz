@@ -84,7 +84,12 @@ export default function App() {
 
         {stage === 'form' && (
           <div className="flex flex-1 items-center justify-center">
-            <ContactForm onSubmit={handleSubmit} onBackToQuiz={() => setStage('quiz')} />
+            <ContactForm
+              onSubmit={handleSubmit}
+              onBackToQuiz={() => setStage('quiz')}
+              score={score}
+              answers={answers}
+            />
           </div>
         )}
 
