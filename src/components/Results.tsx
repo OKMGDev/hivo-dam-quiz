@@ -129,7 +129,7 @@ export default function Results({ score, onRestart }: ResultsProps) {
         className="pointer-events-none absolute bottom-0 right-0 block h-[300px] w-[180px] object-cover object-right-bottom sm:hidden xl:block xl:h-[600px] xl:w-[440px]"
       />
 
-      <div className="relative mx-auto flex w-full max-w-[900px] flex-col px-4 py-10 sm:items-center sm:py-14">
+      <div className="relative mx-auto flex w-full max-w-[900px] flex-col px-4 py-10 sm:items-center sm:py-14 xl:ml-auto xl:mr-[380px]">
         {/* Results card */}
         <div className="w-full max-w-[830px] animate-fade-in-up rounded-[20px] border-[12px] border-[#f8f8f8] bg-white p-5 shadow-[0px_20px_60px_rgba(4,39,255,0.08)] sm:border-[22px] sm:p-8">
           <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center md:gap-12">
@@ -162,7 +162,7 @@ export default function Results({ score, onRestart }: ResultsProps) {
 
         {/* Headline + description + actions — left-aligned on mobile, centred on larger screens */}
         <div className="flex w-full flex-col items-start text-left sm:items-center sm:text-center">
-          <div className="mt-8 flex min-h-[56px] max-w-[52%] items-end sm:h-[56px] sm:max-w-none sm:items-center sm:justify-center">
+          <div className="mt-8 flex min-h-[56px] max-w-[calc(100%-180px)] items-end sm:h-[56px] sm:max-w-none sm:items-center sm:justify-center">
             <h2
               className="animate-fade-in-up text-[22px] font-bold leading-[1.1] text-[#161517] sm:text-[44px] sm:leading-none"
               style={{ animationDelay: '0.15s', animationFillMode: 'backwards' }}
@@ -172,7 +172,7 @@ export default function Results({ score, onRestart }: ResultsProps) {
           </div>
 
           <div
-            className="mt-4 flex max-w-[52%] animate-fade-in-up flex-col justify-start space-y-3 text-[15px] font-normal leading-[1.45] text-[#161517] sm:mt-5 sm:max-w-[655px] sm:justify-center sm:space-y-4 sm:text-[16px] sm:leading-[1.5]"
+            className="mt-4 flex max-w-[calc(100%-180px)] animate-fade-in-up flex-col justify-start space-y-3 text-[15px] font-normal leading-[1.45] text-[#161517] sm:mt-5 sm:max-w-[655px] sm:justify-center sm:space-y-4 sm:text-[16px] sm:leading-[1.5]"
             style={{ animationDelay: '0.25s', animationFillMode: 'backwards' }}
           >
             {band.description.map((line, i) => (
@@ -181,7 +181,7 @@ export default function Results({ score, onRestart }: ResultsProps) {
           </div>
 
           <div
-            className="mt-6 flex max-w-[52%] animate-fade-in-up flex-col items-start gap-3 sm:mt-8 sm:max-w-none sm:items-center"
+            className="mt-6 flex max-w-[calc(100%-180px)] animate-fade-in-up flex-col items-start gap-3 sm:mt-8 sm:max-w-none sm:items-center"
             style={{ animationDelay: '0.35s', animationFillMode: 'backwards' }}
           >
             <a
