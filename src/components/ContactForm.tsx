@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { questions } from '../questions'
-import { isHubSpotConfigured, submitQuizLead } from '../lib/hubspot'
+import { captureQuizLead, isLeadCaptureConfigured } from '../lib/leads'
 
 const hexOuter = '/assets/form-vector.svg'
 const hexInner = '/assets/form-vector1.svg'
@@ -49,13 +49,13 @@ export default function ContactForm({ onSubmit, onBackToQuiz, score, answers }: 
     const trimmedCompany = company.trim()
     if (!trimmedName || !trimmedEmail || !trimmedCompany || submitting) return
 
-    // Send the lead to HubSpot before showing results. If HubSpot isn't
-    // configured (e.g. local dev without env vars), skip straight to results.
-    if (isHubSpotConfigured()) {
+    // Capture the lead (HubSpot + optional Supabase backup) before results.
+    // If nothing is configured (local/dev), skip straight to results.
+    if (isLeadCaptureConfigured()) {
       setSubmitting(true)
       setError(null)
       try {
-        await submitQuizLead({
+        await captureQuizLead({
           name: trimmedName,
           email: trimmedEmail,
           company: trimmedCompany,
