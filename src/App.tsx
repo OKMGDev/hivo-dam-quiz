@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Header from './components/Header'
 import StartScreen from './components/StartScreen'
 import QuestionScreen from './components/QuestionScreen'
@@ -13,10 +13,21 @@ export default function App() {
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [, setContact] = useState<ContactDetails>({ name: '', email: '' })
+  const advanceTimer = useRef<number | null>(null)
 
   const total = questions.length
 
+  function cancelAdvance() {
+    if (advanceTimer.current !== null) {
+      window.clearTimeout(advanceTimer.current)
+      advanceTimer.current = null
+    }
+  }
+
+  useEffect(() => cancelAdvance, [])
+
   function resetAll() {
+    cancelAdvance()
     setStage('start')
     setCurrent(0)
     setAnswers({})
@@ -24,6 +35,7 @@ export default function App() {
   }
 
   function startQuiz() {
+    cancelAdvance()
     setCurrent(0)
     setAnswers({})
     setStage('quiz')
@@ -32,9 +44,13 @@ export default function App() {
   function handleSelect(value: number) {
     setAnswers((prev) => ({ ...prev, [current]: value }))
     // Auto-advance after a short beat so the selection animation is visible.
-    window.setTimeout(() => {
+    // Only one advance may be queued, otherwise rapid taps skip past the last
+    // question and leave the quiz without a question to render.
+    if (advanceTimer.current !== null) return
+    advanceTimer.current = window.setTimeout(() => {
+      advanceTimer.current = null
       if (current < total - 1) {
-        setCurrent((c) => c + 1)
+        setCurrent((c) => Math.min(c + 1, total - 1))
       } else {
         setStage('form')
       }
@@ -42,6 +58,7 @@ export default function App() {
   }
 
   function handleBack() {
+    cancelAdvance()
     if (current > 0) setCurrent((c) => c - 1)
   }
 
@@ -53,9 +70,11 @@ export default function App() {
   // Score: sum of all 1–10 answers across 10 questions → 0–100 scale.
   const score = Object.values(answers).reduce((sum, v) => sum + v, 0)
 
-  const progress = stage === 'quiz' ? (current + 1) / total : 1
+  const questionIndex = Math.min(Math.max(current, 0), total - 1)
 
-  const step = stage === 'quiz' ? `${current + 1} of ${total}` : undefined
+  const progress = stage === 'quiz' ? (questionIndex + 1) / total : 1
+
+  const step = stage === 'quiz' ? `${questionIndex + 1} of ${total}` : undefined
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
@@ -72,9 +91,9 @@ export default function App() {
         {stage === 'quiz' && (
           <div className="flex flex-1 items-center justify-center">
             <QuestionScreen
-              question={questions[current]}
-              index={current}
-              value={answers[current]}
+              question={questions[questionIndex]}
+              index={questionIndex}
+              value={answers[questionIndex]}
               onSelect={handleSelect}
               onBack={handleBack}
               onStartOver={resetAll}
