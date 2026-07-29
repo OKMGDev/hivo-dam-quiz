@@ -148,7 +148,15 @@ export default function ContactForm({ onSubmit, onBackToQuiz, score, answers }: 
         </button>
 
         <p className="mt-2 text-center text-[12px] font-normal leading-[16px] text-[#6a7282]">
-          By submitting, you agree to our privacy policy
+          By submitting, you agree to our{' '}
+          <a
+            href="https://hivo.co/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline transition-colors hover:text-[#101828]"
+          >
+            privacy policy
+          </a>
         </p>
       </form>
     </div>

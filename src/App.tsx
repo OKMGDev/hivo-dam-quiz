@@ -99,7 +99,16 @@ export default function App() {
       {(stage === 'start' || stage === 'quiz') && (
         <footer className="border-t border-[#f3f4f6] px-4 pb-6 pt-[25px] text-center">
           <p className="text-[14px] font-normal text-[#6a7282]">
-            Powered by hivo.co - AI-enabled data intelligence
+            Powered by{' '}
+            <a
+              href="https://hivo.co/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline transition-colors hover:text-[#101828]"
+            >
+              hivo.co
+            </a>{' '}
+            - AI-enabled data intelligence
           </p>
         </footer>
       )}

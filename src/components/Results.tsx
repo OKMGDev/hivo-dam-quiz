@@ -26,6 +26,7 @@ function getBand(score: number): Band {
       headline: 'Oh dear...',
       description: [
         'Your assets are all over the place! How do you even function???',
+        'Start by bringing all your assets into one secure, centralised location: this alone will make a huge difference. From there, organise files with clear tags and categories so they’re easy to search and retrieve. Establish simple processes for uploading, naming, and managing assets to avoid future chaos, and consider introducing a DAM platform to regain control and visibility across your content.',
         'Well done. The first step is being aware! Now you know where you stand, you can take action.',
       ],
       mascot: mascotThinking,
@@ -37,6 +38,7 @@ function getBand(score: number): Band {
       headline: 'Not bad...',
       description: [
         "You're actually doing better than 50% of Australian businesses. There is still some work to be done to get you to 100%!",
+        'A great next step is to centralise your assets into a single, accessible platform and establish clear naming conventions and folder structures. Introduce basic workflows for approvals and version control to reduce duplication and confusion. From there, look at improving collaboration across your team so everyone knows where to find and how to use the right assets at the right time.',
         'Well done. The first step is being aware! Now you know where you stand, you can take action.',
       ],
       mascot: mascotNeutral,
@@ -47,6 +49,7 @@ function getBand(score: number): Band {
     headline: "You're a DAM hero.",
     description: [
       "It sounds like you're already DAM-proficient!",
+      'To stay ahead, focus on refining your workflows and unlocking advanced efficiencies. Consider implementing automation for repetitive tasks, using AI-powered search to surface insights faster, and regularly auditing your asset library to maintain quality and consistency. You could also explore deeper integrations with your existing tools to ensure your DAM system becomes the central hub of your content operations.',
       'Now you know where you stand, you can take action.',
     ],
     mascot: mascotHero,
@@ -169,7 +172,7 @@ export default function Results({ score, onRestart }: ResultsProps) {
           </div>
 
           <div
-            className="mt-4 flex min-h-[130px] max-w-[52%] animate-fade-in-up flex-col justify-start space-y-2.5 text-[15px] font-normal leading-[1.35] text-[#161517] sm:mt-5 sm:min-h-[92px] sm:max-w-[655px] sm:justify-center sm:text-[16px] sm:leading-[1.4]"
+            className="mt-4 flex max-w-[52%] animate-fade-in-up flex-col justify-start space-y-3 text-[15px] font-normal leading-[1.45] text-[#161517] sm:mt-5 sm:max-w-[655px] sm:justify-center sm:space-y-4 sm:text-[16px] sm:leading-[1.5]"
             style={{ animationDelay: '0.25s', animationFillMode: 'backwards' }}
           >
             {band.description.map((line, i) => (
