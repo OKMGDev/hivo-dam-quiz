@@ -53,14 +53,33 @@ export async function submitQuizLead({ name, email, company, score, breakdown }:
     },
   }
 
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  })
+  // #region agent log
+  fetch('http://127.0.0.1:7895/ingest/d549c8b4-3ba7-4925-8533-a30ca1f5f0b5',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'210e23'},body:JSON.stringify({sessionId:'210e23',runId:'repro-1',hypothesisId:'B,D',location:'src/lib/hubspot.ts:56',message:'HubSpot submit: about to fetch',data:{origin:window.location.origin,portalIdLen:(PORTAL_ID||'').length,formGuidLen:(FORM_GUID||'').length,fieldCount:fields.length,bodyBytes:JSON.stringify(body).length,online:navigator.onLine},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
+
+  let res: Response
+  try {
+    res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+  } catch (networkErr) {
+    // #region agent log
+    fetch('http://127.0.0.1:7895/ingest/d549c8b4-3ba7-4925-8533-a30ca1f5f0b5',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'210e23'},body:JSON.stringify({sessionId:'210e23',runId:'repro-1',hypothesisId:'A',location:'src/lib/hubspot.ts:62',message:'HubSpot fetch THREW (no response received)',data:{errName:(networkErr as Error)?.name,errMsg:String((networkErr as Error)?.message).slice(0,200),online:navigator.onLine},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
+    throw networkErr
+  }
+
+  // #region agent log
+  fetch('http://127.0.0.1:7895/ingest/d549c8b4-3ba7-4925-8533-a30ca1f5f0b5',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'210e23'},body:JSON.stringify({sessionId:'210e23',runId:'repro-1',hypothesisId:'B,F',location:'src/lib/hubspot.ts:70',message:'HubSpot response received',data:{status:res.status,ok:res.ok},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
 
   if (!res.ok) {
     const detail = await res.text().catch(() => '')
+    // #region agent log
+    fetch('http://127.0.0.1:7895/ingest/d549c8b4-3ba7-4925-8533-a30ca1f5f0b5',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'210e23'},body:JSON.stringify({sessionId:'210e23',runId:'repro-1',hypothesisId:'B',location:'src/lib/hubspot.ts:76',message:'HubSpot non-OK response body',data:{status:res.status,detail:detail.slice(0,300)},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     throw new Error(`HubSpot submission failed (${res.status}): ${detail}`)
   }
 }
